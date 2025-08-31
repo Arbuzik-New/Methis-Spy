@@ -511,9 +511,8 @@ local queue = {} -- The current Thread cannot access 'Instance' (lacking capabil
 local old
 
 old = hookmetamethod(game, "__namecall", function(s, ...)
-	
+	local args = {...}
 	if not destroyed then
-		local args = {...}
 		local method = getnamecallmethod()
 		if method == "FireServer" then
 			table.insert(queue, {s, args})
