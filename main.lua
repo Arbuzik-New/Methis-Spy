@@ -1,3 +1,7 @@
+-- Services:
+
+local TextService = game:GetService("TextService")
+
 -- Instances:
 
 local MethisSpy = Instance.new("ScreenGui")
@@ -248,8 +252,6 @@ function addCode(code : string)
 
 	local lines = split(code, "\n")
 
-	local TextService = game:GetService("TextService")
-
 	for i,line in ipairs(lines) do
 		local CodeLine = Instance.new("TextLabel")
 		CodeLine.Name = "Line_" .. i
@@ -343,8 +345,15 @@ function addRemote(instance, ...)
 	Remote.Font = Enum.Font.SourceSansBold
 	Remote.Text = instance.Name
 	Remote.TextColor3 = Color3.fromRGB(255, 255, 255)
-	-- 	Remote.TextSize = 16.000
-	Remote.TextScaled = true
+	
+	local size = Vector2.new(TextService:GetTextSize(Remote.Text, 16, Enum.Font.SourceSansBold, Vector2.new(0, 0)).X + 10, 15)
+	
+	if size.X > Remote.AbsoluteSize.X then
+		Remote.TextScaled = true
+	else
+		Remote.TextSize = 16.000
+	end
+	
 	Remote.TextXAlignment = Enum.TextXAlignment.Left
 
 	UICorner.CornerRadius = UDim.new(0, 4)
