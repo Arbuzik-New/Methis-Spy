@@ -26,15 +26,13 @@ local UICorner_9 = Instance.new("UICorner")
 local DestroyUI = Instance.new("TextButton")
 local UICorner_10 = Instance.new("UICorner")
 local CodeHolder = Instance.new("ScrollingFrame")
-local Line_1 = Instance.new("TextLabel")
 local UIListLayout_2 = Instance.new("UIListLayout")
 local UIPadding_3 = Instance.new("UIPadding")
-local Line_1_2 = Instance.new("TextLabel")
 
 --Properties:
 
 MethisSpy.Name = "Methis Spy"
--- MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui -- Uncomment if dont work
+ --MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui -- Uncomment if dont work
 MethisSpy.Parent = game:GetService("CoreGui") -- Comment if dont work
 MethisSpy.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -215,20 +213,6 @@ CodeHolder.Size = UDim2.new(1, -140, 1, -115)
 CodeHolder.ScrollBarThickness = 4
 CodeHolder.CanvasSize = UDim2.new(0, 0, 0, 10)
 
-Line_1.Name = "Line_1"
-Line_1.Parent = CodeHolder
-Line_1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Line_1.BackgroundTransparency = 1.000
-Line_1.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Line_1.BorderSizePixel = 0
-Line_1.Size = UDim2.new(1, 0, 0, 15)
-Line_1.Font = Enum.Font.SourceSansBold
-Line_1.Text = "print('Line 1')"
-Line_1.TextColor3 = Color3.fromRGB(255, 192, 193)
-Line_1.TextSize = 14.000
-Line_1.TextXAlignment = Enum.TextXAlignment.Left
-Line_1.TextYAlignment = Enum.TextYAlignment.Top
-
 UIListLayout_2.Parent = CodeHolder
 UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -237,20 +221,6 @@ UIPadding_3.PaddingBottom = UDim.new(0, 5)
 UIPadding_3.PaddingLeft = UDim.new(0, 5)
 UIPadding_3.PaddingRight = UDim.new(0, 5)
 UIPadding_3.PaddingTop = UDim.new(0, 3)
-
-Line_1_2.Name = "Line_1"
-Line_1_2.Parent = CodeHolder
-Line_1_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Line_1_2.BackgroundTransparency = 1.000
-Line_1_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Line_1_2.BorderSizePixel = 0
-Line_1_2.Size = UDim2.new(1, 0, 0, 15)
-Line_1_2.Font = Enum.Font.SourceSansBold
-Line_1_2.Text = "print('Line 2')"
-Line_1_2.TextColor3 = Color3.fromRGB(255, 192, 193)
-Line_1_2.TextSize = 14.000
-Line_1_2.TextXAlignment = Enum.TextXAlignment.Left
-Line_1_2.TextYAlignment = Enum.TextYAlignment.Top
 
 -- Logic:
 
@@ -390,9 +360,9 @@ function addRemote(instance, ...)
 				r.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
 			end
 		end
-		
+
 		Remote.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-		
+
 		currentRemote = instance
 
 		clearCode()
@@ -535,6 +505,8 @@ old = hookmetamethod(game, "__namecall", function(s, ...)
 	end
 	return old(s, unpack(args))
 end)
+
+addCode("-- Discord: arbuzik.new\n-- original github: https://github.com/Arbuzik-New/Methis-Spy")
 
 while task.wait(0.05) do
 	while #queue > 0 do
