@@ -33,7 +33,7 @@ local Line_1_2 = Instance.new("TextLabel")
 
 --Properties:
 
-MethisSpy.Name = "MethisSpy"
+MethisSpy.Name = "Methis Spy"
 -- MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui -- Uncomment if dont work
 MethisSpy.Parent = game:GetService("CoreGui") -- Comment if dont work
 MethisSpy.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -373,8 +373,8 @@ function addRemote(instance, ...)
 	Remote.Font = Enum.Font.SourceSansBold
 	Remote.Text = instance.Name
 	Remote.TextColor3 = Color3.fromRGB(255, 255, 255)
--- 	Remote.TextSize = 16.000
-    Remote.TextScaled = true
+	-- 	Remote.TextSize = 16.000
+	Remote.TextScaled = true
 	Remote.TextXAlignment = Enum.TextXAlignment.Left
 
 	UICorner.CornerRadius = UDim.new(0, 4)
@@ -385,6 +385,14 @@ function addRemote(instance, ...)
 	UIPadding.PaddingRight = UDim.new(0, 7)
 
 	Remote.Activated:Connect(function()
+		for i,r in ipairs(RemotesHolder:GetChildren()) do
+			if r:IsA("TextButton") then
+				r.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+			end
+		end
+		
+		Remote.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+		
 		currentRemote = instance
 
 		clearCode()
@@ -523,15 +531,15 @@ old = hookmetamethod(game, "__namecall", function(s, ...)
 	local args = {...}
 	local method = getnamecallmethod()
 	if method == "FireServer" then
-        table.insert(queue, {s, args})
-    end
+		table.insert(queue, {s, args})
+	end
 	return old(s, unpack(args))
 end)
 
 while task.wait(0.05) do
-    while #queue > 0 do
-        local remote = queue[1]
-        addRemote(remote[1], unpack(remote[2]))
-        table.remove(queue, 1)
-    end
+	while #queue > 0 do
+		local remote = queue[1]
+		addRemote(remote[1], unpack(remote[2]))
+		table.remove(queue, 1)
+	end
 end
