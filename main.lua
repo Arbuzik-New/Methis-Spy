@@ -373,7 +373,8 @@ function addRemote(instance, ...)
 	Remote.Font = Enum.Font.SourceSansBold
 	Remote.Text = instance.Name
 	Remote.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Remote.TextSize = 16.000
+-- 	Remote.TextSize = 16.000
+    Remote.TextScaled = true
 	Remote.TextXAlignment = Enum.TextXAlignment.Left
 
 	UICorner.CornerRadius = UDim.new(0, 4)
