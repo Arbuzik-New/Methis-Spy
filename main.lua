@@ -39,7 +39,7 @@ local UIPadding_3 = Instance.new("UIPadding")
 --Properties:
 
 MethisSpy.Name = "Methis Spy"
- --MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui -- Uncomment if dont work
+--MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui -- Uncomment if dont work
 MethisSpy.Parent = game:GetService("CoreGui") -- Comment if dont work
 MethisSpy.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -242,6 +242,34 @@ function split(s, delimiter)
 	return result
 end
 
+function convertPath(path)
+	local parts = {}
+	for part in path:gmatch("[^%.]+") do
+		table.insert(parts, part)
+	end
+
+	if #parts == 0 then return path end
+
+	local result = parts[1]
+	local i = 2
+
+	if parts[1] == "game" and parts[2] then
+		result = result .. ":GetService(\"" .. parts[2] .. "\")"
+		i = 3
+	end
+
+	while i <= #parts do
+		if parts[i]:match("^[%a_][%w_]*$") then
+			result = result .. "." .. parts[i]
+		else
+			result = result .. "[\"" .. parts[i]:gsub("\\", "\\\\"):gsub("\"", "\\\"") .. "\"]"
+		end
+		i = i + 1
+	end
+
+	return result
+end
+
 function clearCode()
 	for i,line in ipairs(CodeHolder:GetChildren()) do
 		if line:IsA("TextLabel") then
@@ -271,7 +299,7 @@ function addCode(code : string)
 		CodeLine.TextXAlignment = Enum.TextXAlignment.Left
 		CodeLine.TextYAlignment = Enum.TextYAlignment.Top
 
-		local size = Vector2.new(TextService:GetTextSize(CodeLine.Text, 14, Enum.Font.SourceSansBold, Vector2.new(0, 0)).X + 10, 15)
+		local size = Vector2.new(TextService:GetTextSize(CodeLine.Text, 14, Enum.Font.SourceSansBold, Vector2.new(0, 0)).X + 5, 15)
 
 		CodeHolder.CanvasSize = UDim2.new(0, math.max(size.X, CodeHolder.CanvasSize.X.Offset), 0, CodeHolder.CanvasSize.Y.Offset + size.Y)
 	end
@@ -302,7 +330,7 @@ function serialize(value, indent)
 	elseif type(value) == "number" or type(value) == "boolean" or type(value) == "nil" then
 		return tostring(value)
 	elseif typeof(value) == "Instance" then
-		return value:GetFullName()
+		return convertPath("game." .. value:GetFullName())
 	elseif typeof(value) == "Vector3" then
 		return string.format("Vector3.new(%s, %s, %s)", value.X, value.Y, value.Z)
 	elseif typeof(value) == "Vector2" then
@@ -348,15 +376,15 @@ function addRemote(instance, ...)
 	Remote.Font = Enum.Font.SourceSansBold
 	Remote.Text = instance.Name
 	Remote.TextColor3 = Color3.fromRGB(255, 255, 255)
-	
+
 	local size = Vector2.new(TextService:GetTextSize(Remote.Text, 16, Enum.Font.SourceSansBold, Vector2.new(0, 0)).X + 10, 15)
-	
+
 	if size.X > Remote.AbsoluteSize.X then
 		Remote.TextScaled = true
 	else
 		Remote.TextSize = 16.000
 	end
-	
+
 	Remote.TextXAlignment = Enum.TextXAlignment.Left
 
 	UICorner.CornerRadius = UDim.new(0, 4)
@@ -378,7 +406,7 @@ function addRemote(instance, ...)
 		currentRemote = instance
 
 		clearCode()
-		local code = "local remote = game." .. instance:GetFullName()
+		local code = "local remote = " .. convertPath("game." .. instance:GetFullName())
 		code = code .. "\t\n"
 		if #args > 0 then
 			code = code .. "local args = " .. serialize(args)
@@ -477,9 +505,6 @@ end
 
 function ClearLogsScript()
 
-	RemotesHolder.CanvasSize = UDim2.new(0, 0, 0, 10)
-	currentRemote = nil
-
 	ClearLogs.Activated:Connect(function()
 		for i,remote in ipairs(RemotesHolder:GetChildren()) do
 			if remote:IsA("TextButton") then
@@ -487,6 +512,8 @@ function ClearLogsScript()
 			end
 		end
 		clearCode()
+		RemotesHolder.CanvasSize = UDim2.new(0, 0, 0, 10)
+		currentRemote = nil
 	end)
 
 end
@@ -521,13 +548,13 @@ old = hookmetamethod(game, "__namecall", function(s, ...)
 	return old(s, unpack(args))
 end)
 
-addCode("-- Discord: arbuzik.new\n-- original github: https://github.com/Arbuzik-New/Methis-Spy")
+addCode("-- Discord: arbuzik.new\n-- Original github: https://github.com/Arbuzik-New/Methis-Spy")
 
 while task.wait(0.05) do
 	if destroyed then
 		break
 	end
-	
+
 	while #queue > 0 do
 		local remote = queue[1]
 		addRemote(remote[1], unpack(remote[2]))
