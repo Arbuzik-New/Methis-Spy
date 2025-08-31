@@ -1,3 +1,6 @@
+-- Variables:
+local destroyed = false
+
 -- Services:
 
 local TextService = game:GetService("TextService")
@@ -491,6 +494,7 @@ end
 function DestroyUIScript()
 	DestroyUI.Activated:Connect(function()
 		MethisSpy:Destroy()
+		destroyed = true
 	end)
 end
 
@@ -507,10 +511,13 @@ local queue = {} -- The current Thread cannot access 'Instance' (lacking capabil
 local old
 
 old = hookmetamethod(game, "__namecall", function(s, ...)
-	local args = {...}
-	local method = getnamecallmethod()
-	if method == "FireServer" then
-		table.insert(queue, {s, args})
+	
+	if not destroyed then
+		local args = {...}
+		local method = getnamecallmethod()
+		if method == "FireServer" then
+			table.insert(queue, {s, args})
+		end
 	end
 	return old(s, unpack(args))
 end)
@@ -518,6 +525,10 @@ end)
 addCode("-- Discord: arbuzik.new\n-- original github: https://github.com/Arbuzik-New/Methis-Spy")
 
 while task.wait(0.05) do
+	if destroyed then
+		break
+	end
+	
 	while #queue > 0 do
 		local remote = queue[1]
 		addRemote(remote[1], unpack(remote[2]))
