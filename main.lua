@@ -1,6 +1,3 @@
--- Gui to Lua
--- Version: 3.2
-
 -- Instances:
 
 local MethisSpy = Instance.new("ScreenGui")
@@ -36,9 +33,9 @@ local Line_1_2 = Instance.new("TextLabel")
 
 --Properties:
 
-MethisSpy.Name = "Methis Spy"
-MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui
---MethisSpy.Parent = game:GetService("CoreGui") FUCKING ROBLOX
+MethisSpy.Name = "MethisSpy"
+-- MethisSpy.Parent = game:GetService("Players").LocalPlayer.PlayerGui -- Uncomment if dont work
+MethisSpy.Parent = game:GetService("CoreGui") -- Comment if dont work
 MethisSpy.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -517,13 +514,23 @@ coroutine.wrap(ClearIgnoreScript)()
 coroutine.wrap(ClearLogsScript)()
 coroutine.wrap(DestroyUIScript)()
 
+local queue = {} -- The current Thread cannot access 'Instance' (lacking capability Plugin) FUCKING ROBLOX MABOI
+
 local old
 
 old = hookmetamethod(game, "__namecall", function(s, ...)
 	local args = {...}
 	local method = getnamecallmethod()
 	if method == "FireServer" then
-		addRemote(s, unpack(args))
-	end
+        table.insert(queue, {s, args})
+    end
 	return old(s, unpack(args))
 end)
+
+while task.wait(0.05) do
+    while #queue > 0 do
+        local remote = queue[1]
+        addRemote(remote[1], unpack(remote[2]))
+        table.remove(queue, 1)
+    end
+end
